@@ -68,6 +68,7 @@
   .card-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--surface2);}
   .card-img-placeholder{width:100%;aspect-ratio:4/3;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--border);}
   .card-body{padding:14px;}
+  .card-no-img .card-body{padding-top:18px;}
   .card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
   .tag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
   .card-desc{font-size:13px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
@@ -247,7 +248,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modalTitle">New Card</div>
-    <div class="field">
+    <div class="field" id="photoField">
       <label>Photo</label>
       <div class="img-upload-area" id="uploadArea"><div class="upload-icon">🖼</div><span>Tap to upload a photo</span><img id="previewImg" style="display:none"/></div>
       <input type="file" id="img-input" accept="image/*"/>
@@ -368,8 +369,8 @@
     const sc=cards.filter(c=>c.section===currentSection);
     if(!sc.length){grid.innerHTML=`<div class="empty-state"><div class="empty-icon">✦</div><p>No cards yet in <strong>${esc(currentSection)}</strong>.<br>Tap <strong>+ Add Card</strong> to start.</p></div>`;return;}
     grid.innerHTML=sc.map((c,i)=>`
-      <div class="card" style="animation-delay:${i*0.05}s">
-        ${c.img_data?`<img class="card-img" src="${c.img_data}" alt=""/>`:`<div class="card-img-placeholder">🖼</div>`}
+      <div class="card ${c.img_data?'':'card-no-img'}" style="animation-delay:${i*0.05}s">
+        ${c.img_data?`<img class="card-img" src="${c.img_data}" alt=""/>`:''}
         <div class="card-body">
           ${c.tags&&c.tags.length?`<div class="card-tags">${c.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}
           ${c.description?`<div class="card-desc">${esc(c.description)}</div>`:''}
@@ -402,6 +403,9 @@
     document.getElementById('previewImg').style.display='none';
     document.getElementById('img-input').value='';
     document.getElementById('modalTitle').textContent='New Card';
+    // always show photo upload for new cards
+    document.getElementById('photoField').style.display='block';
+    document.getElementById('uploadArea').style.display='flex';
   }
   document.getElementById('cancelModal').addEventListener('click',()=>document.getElementById('addModal').classList.remove('open'));
   document.getElementById('addModal').addEventListener('click',e=>{if(e.target===document.getElementById('addModal'))document.getElementById('addModal').classList.remove('open');});
@@ -442,7 +446,15 @@
     document.getElementById('modalTitle').textContent='Edit Card';
     document.getElementById('cardDesc').value=c.description||'';
     pendingTags=[...(c.tags||[])];renderTagsPreview();
-    if(c.img_data){pendingImg=c.img_data;const pi=document.getElementById('previewImg');pi.src=c.img_data;pi.style.display='block';}
+    if(c.img_data){
+      pendingImg=c.img_data;
+      const pi=document.getElementById('previewImg');
+      pi.src=c.img_data;pi.style.display='block';
+      document.getElementById('uploadArea').style.display='flex';
+    } else {
+      // no photo on this card — still show upload area so user can add one
+      document.getElementById('uploadArea').style.display='flex';
+    }
     document.getElementById('addModal').classList.add('open');
   }
   async function deleteCard(id){
