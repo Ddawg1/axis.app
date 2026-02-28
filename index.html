@@ -195,8 +195,6 @@
   <div class="nav-item active" data-section="Work" data-type="board"><span class="nav-icon">💼</span> Work</div>
   <div class="nav-item" data-section="Personal" data-type="board"><span class="nav-icon">🏠</span> Personal</div>
   <div class="nav-item" data-section="Hobbies" data-type="board"><span class="nav-icon">🎨</span> Hobbies</div>
-  <div class="nav-item" data-section="Health &amp; Fitness" data-type="board"><span class="nav-icon">⚡</span> Health &amp; Fitness</div>
-  <div class="nav-item" data-section="Finance" data-type="board"><span class="nav-icon">📊</span> Finance</div>
   <div class="sidebar-bottom">
     <div class="theme-toggle" id="themeToggle">
       <div class="toggle-track"><div class="toggle-thumb"></div></div>
@@ -241,8 +239,6 @@
     <button class="bottom-nav-item" data-section="Work" data-type="board"><span class="bn-icon">💼</span><span class="bn-label">Work</span></button>
     <button class="bottom-nav-item" data-section="Personal" data-type="board"><span class="bn-icon">🏠</span><span class="bn-label">Personal</span></button>
     <button class="bottom-nav-item" data-section="Hobbies" data-type="board"><span class="bn-icon">🎨</span><span class="bn-label">Hobbies</span></button>
-    <button class="bottom-nav-item" data-section="Health &amp; Fitness" data-type="board"><span class="bn-icon">⚡</span><span class="bn-label">Health</span></button>
-    <button class="bottom-nav-item" data-section="Finance" data-type="board"><span class="bn-icon">📊</span><span class="bn-label">Finance</span></button>
   </div>
 </nav>
 
@@ -333,7 +329,7 @@
   // Nav — works for both sidebar and bottom nav
   function switchSection(section, type){
     currentSection=section; currentView=type;
-    document.getElementById('sectionTitle').textContent=section==='Health & Fitness'?'Health':section;
+    document.getElementById('sectionTitle').textContent=section;
 
     // update sidebar
     document.querySelectorAll('.nav-item').forEach(n=>{
