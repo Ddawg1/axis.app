@@ -69,8 +69,6 @@
   .card-img-placeholder{width:100%;aspect-ratio:4/3;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--border);}
   .card-body{padding:14px;}
   .card-no-img .card-body{padding-top:18px;}
-  .card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
-  .tag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
   .card-desc{font-size:13px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .card-actions{display:flex;gap:8px;padding:10px 14px 12px;border-top:1px solid var(--border);}
   .card-action-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:color 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent;}
@@ -128,19 +126,12 @@
   .img-upload-area span{font-size:13px;color:var(--muted);z-index:1;}
   .img-upload-area .upload-icon{font-size:28px;margin-bottom:8px;z-index:1;}
   #img-input{display:none;}
-  .tags-input-row{display:flex;gap:8px;}
-  .tags-input-row input{flex:1;}
-  .tags-input-row button{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0 16px;color:var(--text);cursor:pointer;font-size:20px;transition:background 0.15s;flex-shrink:0;min-width:48px;-webkit-tap-highlight-color:transparent;}
-  .tags-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-  .tag-chip{display:flex;align-items:center;gap:6px;font-size:11px;padding:5px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;color:var(--text);}
-  .tag-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0;line-height:1;-webkit-tap-highlight-color:transparent;}
   .modal-actions{display:flex;gap:12px;margin-top:24px;}
   .btn-cancel{flex:1;background:none;border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;transition:border-color 0.15s,color 0.15s;-webkit-tap-highlight-color:transparent;}
   .btn-save{flex:2;background:var(--accent2);border:none;border-radius:12px;padding:14px;color:#000;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:opacity 0.15s;-webkit-tap-highlight-color:transparent;}
   .btn-save:active{opacity:0.85;}
   .view-modal .view-img{width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin-bottom:16px;}
   .view-modal .view-desc{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;margin-bottom:16px;}
-  .view-modal .view-tags{display:flex;flex-wrap:wrap;gap:6px;}
 
   /* ── TOAST ── */
   .toast{position:fixed;bottom:calc(var(--bottom-nav-h) + var(--safe-bottom) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--accent2);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--text);z-index:999;opacity:0;transition:all 0.3s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.3);}
@@ -254,11 +245,7 @@
       <input type="file" id="img-input" accept="image/*"/>
     </div>
     <div class="field"><label>Description / Notes</label><textarea id="cardDesc" rows="3" placeholder="Write something..."></textarea></div>
-    <div class="field">
-      <label>Tags</label>
-      <div class="tags-input-row"><input type="text" id="tagInput" placeholder="Add a tag…" maxlength="24"/><button id="addTagBtn">+</button></div>
-      <div class="tags-preview" id="tagsPreview"></div>
-    </div>
+
     <div class="modal-actions"><button class="btn-cancel" id="cancelModal">Cancel</button><button class="btn-save" id="saveCard">Save</button></div>
   </div>
 </div>
@@ -270,7 +257,7 @@
     <div class="modal-title" id="viewTitle"></div>
     <img id="viewImg" class="view-img" style="display:none"/>
     <div class="view-desc" id="viewDesc"></div>
-    <div class="view-tags" id="viewTags"></div>
+
     <div class="modal-actions"><button class="btn-cancel" id="closeView">Close</button></div>
   </div>
 </div>
@@ -304,7 +291,7 @@
     del:async(t,id)=>{const r=await fetch(`${SUPABASE_URL}/rest/v1/${t}?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',headers:HW});if(!r.ok)throw new Error(await r.text());}
   };
 
-  let cards=[],tasks=[],currentSection='Tasks',currentView='tasks',currentTaskTab='today',editingId=null,pendingImg=null,pendingTags=[];
+  let cards=[],tasks=[],currentSection='Tasks',currentView='tasks',currentTaskTab='today',editingId=null,pendingImg=null;
 
   let loadTimer=null;
   const lb=document.getElementById('loadingBar');
@@ -372,7 +359,7 @@
       <div class="card ${c.img_data?'':'card-no-img'}" style="animation-delay:${i*0.05}s">
         ${c.img_data?`<img class="card-img" src="${c.img_data}" alt=""/>`:''}
         <div class="card-body">
-          ${c.tags&&c.tags.length?`<div class="card-tags">${c.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}
+
           ${c.description?`<div class="card-desc">${esc(c.description)}</div>`:''}
         </div>
         <div class="card-actions">
@@ -389,7 +376,6 @@
     const img=document.getElementById('viewImg');
     if(c.img_data){img.src=c.img_data;img.style.display='block';}else img.style.display='none';
     document.getElementById('viewDesc').textContent=c.description||'';
-    document.getElementById('viewTags').innerHTML=(c.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
     document.getElementById('viewModal').classList.add('open');
   }
   document.getElementById('closeView').addEventListener('click',()=>document.getElementById('viewModal').classList.remove('open'));
@@ -398,8 +384,6 @@
   function resetCardModal(){
     pendingImg=null;pendingTags=[];editingId=null;
     document.getElementById('cardDesc').value='';
-    document.getElementById('tagInput').value='';
-    document.getElementById('tagsPreview').innerHTML='';
     document.getElementById('previewImg').style.display='none';
     document.getElementById('img-input').value='';
     document.getElementById('modalTitle').textContent='New Card';
@@ -414,11 +398,6 @@
     const f=e.target.files[0];if(!f)return;
     const r=new FileReader();r.onload=ev=>{pendingImg=ev.target.result;const pi=document.getElementById('previewImg');pi.src=pendingImg;pi.style.display='block';};r.readAsDataURL(f);
   });
-  function renderTagsPreview(){document.getElementById('tagsPreview').innerHTML=pendingTags.map((t,i)=>`<span class="tag-chip">${esc(t)}<button onclick="removeTag(${i})">×</button></span>`).join('');}
-  function removeTag(i){pendingTags.splice(i,1);renderTagsPreview();}
-  document.getElementById('addTagBtn').addEventListener('click',addTag);
-  document.getElementById('tagInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addTag();}});
-  function addTag(){const v=document.getElementById('tagInput').value.trim();if(v&&!pendingTags.includes(v)){pendingTags.push(v);renderTagsPreview();}document.getElementById('tagInput').value='';}
 
   document.getElementById('saveCard').addEventListener('click',async()=>{
     const desc=document.getElementById('cardDesc').value.trim();
@@ -426,13 +405,13 @@
     loadStart();
     try{
       if(editingId){
-        const upd={description:desc,tags:pendingTags};
+        const upd={description:desc};
         if(pendingImg!==null)upd.img_data=pendingImg;
         await api.patch('cards',editingId,upd);
         const idx=cards.findIndex(c=>c.id===editingId);
         if(idx>-1)cards[idx]={...cards[idx],...upd};
       }else{
-        const nc={id:Date.now().toString(),section:currentSection,img_data:pendingImg||null,description:desc,tags:pendingTags};
+        const nc={id:Date.now().toString(),section:currentSection,img_data:pendingImg||null,description:desc,tags:[]};
         await api.post('cards',nc);
         cards.push(nc);
       }
@@ -445,7 +424,6 @@
     resetCardModal();editingId=id;
     document.getElementById('modalTitle').textContent='Edit Card';
     document.getElementById('cardDesc').value=c.description||'';
-    pendingTags=[...(c.tags||[])];renderTagsPreview();
     if(c.img_data){
       pendingImg=c.img_data;
       const pi=document.getElementById('previewImg');
