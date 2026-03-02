@@ -96,7 +96,7 @@
   .section-title{font-family:'Unica One',sans-serif;font-size:24px;letter-spacing:0.04em;}
   .add-btn{display:flex;align-items:center;gap:8px;background:var(--accent2);color:#000;border:none;border-radius:var(--radius);padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity 0.15s;letter-spacing:0.02em;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
   .add-btn:hover{opacity:0.85;}
-  .loading-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent2);width:0%;opacity:1;z-index:300;}
+  .loading-bar{position:fixed;top:0;left:0;height:3px;background:var(--accent2);width:0%;opacity:0;z-index:300;transition:width 0.4s ease,opacity 0.3s ease;}
 
   /* ── GRID ── */
   .grid-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
@@ -360,8 +360,30 @@
   // ── LOADING BAR ──
   let loadTimer=null;
   const lb=document.getElementById('loadingBar');
-  function loadStart(){if(loadTimer)clearTimeout(loadTimer);lb.style.transition='width 0.4s ease';lb.style.width='75%';lb.style.opacity='1';}
-  function loadDone(){lb.style.transition='width 0.2s ease';lb.style.width='100%';loadTimer=setTimeout(()=>{lb.style.transition='opacity 0.3s';lb.style.opacity='0';setTimeout(()=>{lb.style.width='0%';lb.style.opacity='1';lb.style.transition='';},300);},150);}
+  function loadStart(){
+    if(loadTimer){clearTimeout(loadTimer);loadTimer=null;}
+    lb.style.transition='none';
+    lb.style.width='0%';
+    lb.style.opacity='1';
+    // force reflow so the reset registers before animating
+    lb.offsetHeight;
+    lb.style.transition='width 0.5s ease';
+    lb.style.width='70%';
+  }
+  function loadDone(){
+    lb.style.transition='width 0.15s ease';
+    lb.style.width='100%';
+    loadTimer=setTimeout(()=>{
+      lb.style.transition='opacity 0.25s ease';
+      lb.style.opacity='0';
+      loadTimer=setTimeout(()=>{
+        lb.style.transition='none';
+        lb.style.width='0%';
+        lb.style.opacity='1';
+        loadTimer=null;
+      },280);
+    },160);
+  }
 
   function todayStr(){return new Date().toISOString().slice(0,10);}
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -527,7 +549,8 @@
 
   document.getElementById('saveCard').addEventListener('click',async()=>{
     const desc=document.getElementById('cardDesc').value.trim();
-    if(!desc&&!pendingImg)return;
+    if(!desc&&!pendingImg){alert('Add a photo or some text first.');return;}
+    if(!currentUser){alert('Not logged in.');return;}
     loadStart();
     try{
       if(editingId){
@@ -538,13 +561,27 @@
         const idx=cards.findIndex(c=>c.id===editingId);
         if(idx>-1)cards[idx]={...cards[idx],...upd};
       }else{
-        const nc={id:Date.now().toString(),section:currentSection,img_data:pendingImg||null,description:desc,tags:[],user_id:currentUser.id};
+        const nc={
+          id:Date.now().toString(),
+          section:currentSection,
+          img_data:pendingImg||null,
+          description:desc||null,
+          tags:[],
+          user_id:currentUser.id,
+          created_at:new Date().toISOString()
+        };
         const{error}=await sb.from('cards').insert(nc);
         if(error)throw error;
         cards.push(nc);
       }
-      loadDone();renderGrid();document.getElementById('addModal').classList.remove('open');
-    }catch(e){loadDone();alert('Error saving: '+e.message);}
+      loadDone();
+      renderGrid();
+      document.getElementById('addModal').classList.remove('open');
+    }catch(e){
+      loadDone();
+      alert('Save failed: '+e.message);
+      console.error('saveCard error:',e);
+    }
   });
 
   function openEdit(id){
@@ -580,7 +617,16 @@
     const name=document.getElementById('taskName').value.trim();if(!name)return;
     loadStart();
     try{
-      const task={id:Date.now().toString(),name,priority:document.getElementById('taskPriority').value,date:document.getElementById('taskDate').value,time:document.getElementById('taskTime').value||null,done:false,user_id:currentUser.id};
+      const task={
+        id:Date.now().toString(),
+        name,
+        priority:document.getElementById('taskPriority').value,
+        date:document.getElementById('taskDate').value,
+        time:document.getElementById('taskTime').value||null,
+        done:false,
+        user_id:currentUser.id,
+        created_at:new Date().toISOString()
+      };
       const{error}=await sb.from('tasks').insert(task);
       if(error)throw error;
       tasks.push(task);
