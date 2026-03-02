@@ -63,6 +63,22 @@
   .signout-btn{background:none;border:none;color:var(--muted);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;padding:0;transition:color 0.15s;}
   .signout-btn:hover{color:#ff5555;}
 
+  /* ── HAMBURGER MENU ── */
+  .hamburger-btn{width:38px;height:38px;border:1px solid var(--border);border-radius:10px;background:var(--surface);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;flex-shrink:0;transition:border-color 0.15s;-webkit-tap-highlight-color:transparent;}
+  .hamburger-btn:hover{border-color:var(--accent2);}
+  .hamburger-btn span{display:block;width:16px;height:1.5px;background:var(--text);border-radius:2px;transition:background 0.15s;}
+  .menu-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px;min-width:200px;z-index:200;box-shadow:0 12px 40px rgba(0,0,0,0.35);opacity:0;pointer-events:none;transform:translateY(-8px) scale(0.97);transition:opacity 0.15s,transform 0.15s;transform-origin:top right;}
+  .menu-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0) scale(1);}
+  .menu-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:9px;cursor:pointer;font-size:14px;color:var(--text);transition:background 0.12s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+  .menu-item:hover{background:var(--surface2);}
+  .menu-item.danger{color:#ff5555;}
+  .menu-item.danger:hover{background:rgba(255,60,60,0.08);}
+  .menu-icon{font-size:16px;flex-shrink:0;}
+  .menu-divider{height:1px;background:var(--border);margin:4px 0;}
+  .menu-theme-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:9px;cursor:pointer;font-size:14px;color:var(--text);transition:background 0.12s;}
+  .menu-theme-row:hover{background:var(--surface2);}
+  .topbar-right{position:relative;display:flex;align-items:center;gap:10px;}
+
   /* ── BOTTOM NAV (mobile only) ── */
   .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:calc(var(--bottom-nav-h) + var(--safe-bottom));background:var(--surface);border-top:1px solid var(--border);z-index:50;padding-bottom:var(--safe-bottom);}
   .bottom-nav-inner{display:flex;align-items:stretch;height:var(--bottom-nav-h);}
@@ -80,10 +96,7 @@
   .section-title{font-family:'Unica One',sans-serif;font-size:24px;letter-spacing:0.04em;}
   .add-btn{display:flex;align-items:center;gap:8px;background:var(--accent2);color:#000;border:none;border-radius:var(--radius);padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity 0.15s;letter-spacing:0.02em;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
   .add-btn:hover{opacity:0.85;}
-  .topbar-theme{display:none;align-items:center;gap:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-  .topbar-theme .toggle-track{width:34px;height:18px;}
-  .topbar-theme .toggle-thumb{width:10px;height:10px;}
-  .loading-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent2);width:0%;opacity:1;z-index:200;}
+  .loading-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent2);width:0%;opacity:1;z-index:300;}
 
   /* ── GRID ── */
   .grid-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
@@ -98,7 +111,6 @@
   .card-actions{display:flex;gap:8px;padding:10px 14px 12px;border-top:1px solid var(--border);}
   .card-action-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:color 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent;}
   .card-action-btn:hover{color:var(--text);background:var(--surface2);}
-  .card-action-btn.delete:hover{color:#ff4444;}
   .empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);}
   .empty-state .empty-icon{font-size:48px;margin-bottom:16px;}
   .empty-state p{font-size:14px;line-height:1.7;}
@@ -111,8 +123,8 @@
   .task-tab{padding:8px 20px;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:all 0.15s;border:none;background:none;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;}
   .task-tab.active{background:var(--accent2);color:#000;}
   .task-list{display:flex;flex-direction:column;gap:10px;}
-  .task-item{display:flex;align-items:flex-start;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;transition:border-color 0.15s;animation:fadeUp 0.25s ease both;}
-  .task-item:active{border-color:var(--accent2);}
+  .task-item{display:flex;align-items:flex-start;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;transition:border-color 0.15s,opacity 0.3s;animation:fadeUp 0.25s ease both;}
+  .task-item.completing{opacity:0.4;}
   .task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);cursor:pointer;flex-shrink:0;margin-top:1px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;background:none;-webkit-tap-highlight-color:transparent;}
   .task-check.checked{background:var(--accent2);border-color:var(--accent2);}
   .task-check.checked::after{content:'✓';font-size:12px;color:#000;font-weight:700;}
@@ -156,7 +168,7 @@
   .btn-save{flex:2;background:var(--accent2);border:none;border-radius:12px;padding:14px;color:#000;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:opacity 0.15s;-webkit-tap-highlight-color:transparent;}
   .btn-save:active{opacity:0.85;}
   .view-modal .view-img{width:100%;max-height:240px;object-fit:cover;border-radius:12px;margin-bottom:16px;}
-  .view-modal .view-desc{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;margin-bottom:16px;}
+  .view-modal .view-desc{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;}
 
   /* ── TOAST ── */
   .toast{position:fixed;bottom:calc(var(--bottom-nav-h) + var(--safe-bottom) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--accent2);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--text);z-index:999;opacity:0;transition:all 0.3s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.3);}
@@ -167,7 +179,6 @@
   @media(min-width:640px){
     .sidebar{display:flex;}
     .bottom-nav{display:none;}
-    .topbar-theme{display:none;}
     .modal-overlay{align-items:center;}
     .modal{border-radius:20px;padding:32px;width:min(520px,92vw);max-height:88vh;}
     .modal-handle{display:none;}
@@ -183,7 +194,6 @@
   @media(max-width:639px){
     .sidebar{display:none;}
     .bottom-nav{display:block;}
-    .topbar-theme{display:flex;}
     .main{padding-bottom:calc(var(--bottom-nav-h) + var(--safe-bottom));}
     .grid-area{padding:16px;}
     .tasks-area{padding:16px;}
@@ -204,26 +214,19 @@
   <div class="auth-card">
     <div class="auth-logo"><span class="auth-logo-dot"></span> Axis</div>
     <div class="auth-subtitle">Your personal dashboard</div>
-
     <div class="auth-tabs">
       <button class="auth-tab active" id="tabSignIn" onclick="showAuthTab('signin')">Sign In</button>
       <button class="auth-tab" id="tabSignUp" onclick="showAuthTab('signup')">Sign Up</button>
     </div>
-
     <div id="authError" class="auth-error"></div>
     <div id="authSuccess" class="auth-success"></div>
-
     <div id="authFormSignin">
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"/></div>
       <div class="auth-field"><label>Password</label><input type="password" id="siPassword" placeholder="••••••••" autocomplete="current-password"/></div>
       <button class="auth-btn" id="signInBtn" onclick="signIn()">Sign In</button>
-
       <div class="auth-divider">or</div>
-      <button class="auth-passkey-btn" id="passkeyBtn" onclick="signInPasskey()">
-        <span>🔑</span> Sign in with Passkey / Face ID
-      </button>
+      <button class="auth-passkey-btn" onclick="signInPasskey()"><span>🔑</span> Sign in with Passkey / Face ID</button>
     </div>
-
     <div id="authFormSignup" style="display:none">
       <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"/></div>
       <div class="auth-field"><label>Password</label><input type="password" id="suPassword" placeholder="Min. 8 characters" autocomplete="new-password"/></div>
@@ -257,11 +260,26 @@
 <div class="main">
   <div class="topbar">
     <div class="topbar-left"><div class="section-title" id="sectionTitle">Work</div></div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <div class="topbar-theme" id="themeToggleMobile">
-        <div class="toggle-track"><div class="toggle-thumb"></div></div>
-      </div>
+    <div class="topbar-right">
       <button class="add-btn" id="addBtn">+ Add Card</button>
+      <!-- Hamburger -->
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <!-- Dropdown menu -->
+      <div class="menu-dropdown" id="menuDropdown">
+        <div class="menu-theme-row" onclick="toggleTheme();closeMenu();">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="menu-icon">🌓</span>
+            <span id="menuThemeLabel">Dark Mode</span>
+          </div>
+          <div class="toggle-track" style="pointer-events:none;"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="menu-divider"></div>
+        <button class="menu-item danger" onclick="signOut();closeMenu();">
+          <span class="menu-icon">↩</span> Sign Out
+        </button>
+      </div>
     </div>
   </div>
   <div class="grid-area" id="gridArea"><div class="card-grid" id="cardGrid"></div></div>
@@ -284,11 +302,10 @@
     <button class="bottom-nav-item" data-section="Work" data-type="board"><span class="bn-icon">💼</span><span class="bn-label">Work</span></button>
     <button class="bottom-nav-item" data-section="Personal" data-type="board"><span class="bn-icon">🏠</span><span class="bn-label">Personal</span></button>
     <button class="bottom-nav-item" data-section="Hobbies" data-type="board"><span class="bn-icon">🎨</span><span class="bn-label">Hobbies</span></button>
-    <button class="bottom-nav-item" data-section="__signout__" data-type="signout"><span class="bn-icon">↩</span><span class="bn-label">Sign Out</span></button>
   </div>
 </nav>
 
-<!-- ADD CARD MODAL -->
+<!-- ADD / EDIT CARD MODAL -->
 <div class="modal-overlay" id="addModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -332,7 +349,6 @@
 <div class="toast" id="toast"><div class="toast-title">⏰ Reminder</div><div id="toastMsg"></div></div>
 
 <script>
-  // ── SUPABASE ──
   const { createClient } = supabase;
   const sb = createClient(
     'https://mfhbtholmjznkippcudp.supabase.co',
@@ -351,11 +367,23 @@
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
   // ── THEME ──
-  function applyTheme(t){document.documentElement.setAttribute('data-theme',t);const l=document.getElementById('themeLabel');if(l)l.textContent=t==='dark'?'Dark':'Light';localStorage.setItem('axis_theme',t);}
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme',t);
+    const l=document.getElementById('themeLabel');if(l)l.textContent=t==='dark'?'Dark':'Light';
+    const ml=document.getElementById('menuThemeLabel');if(ml)ml.textContent=t==='dark'?'Dark Mode':'Light Mode';
+    localStorage.setItem('axis_theme',t);
+  }
   applyTheme(localStorage.getItem('axis_theme')||'dark');
   function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');}
   document.getElementById('themeToggle').addEventListener('click',toggleTheme);
-  document.getElementById('themeToggleMobile').addEventListener('click',toggleTheme);
+
+  // ── HAMBURGER MENU ──
+  const hamburgerBtn=document.getElementById('hamburgerBtn');
+  const menuDropdown=document.getElementById('menuDropdown');
+  hamburgerBtn.addEventListener('click',e=>{e.stopPropagation();menuDropdown.classList.toggle('open');});
+  document.addEventListener('click',()=>menuDropdown.classList.remove('open'));
+  menuDropdown.addEventListener('click',e=>e.stopPropagation());
+  function closeMenu(){menuDropdown.classList.remove('open');}
 
   // ── AUTH UI ──
   function showAuthTab(tab){
@@ -375,7 +403,6 @@
     document.getElementById('signUpBtn').textContent=loading?'Creating...':'Create Account';
   }
 
-  // ── SIGN IN ──
   async function signIn(){
     const email=document.getElementById('siEmail').value.trim();
     const password=document.getElementById('siPassword').value;
@@ -386,7 +413,6 @@
     if(error)showAuthError(error.message);
   }
 
-  // ── SIGN UP ──
   async function signUp(){
     const email=document.getElementById('suEmail').value.trim();
     const password=document.getElementById('suPassword').value;
@@ -401,36 +427,22 @@
     else showAuthSuccess('Account created! Check your email to confirm, then sign in.');
   }
 
-  // ── PASSKEY / FACE ID ──
   async function signInPasskey(){
-    // Check if WebAuthn is supported
-    if(!window.PublicKeyCredential){showAuthError('Passkeys are not supported on this device/browser.');return;}
+    if(!window.PublicKeyCredential){showAuthError('Passkeys are not supported on this device.');return;}
+    const email=document.getElementById('siEmail').value.trim();
+    if(!email){showAuthError('Enter your email above first.');return;}
     clearAuthMessages();
-    try{
-      // Try to get the email first if typed in
-      const email=document.getElementById('siEmail').value.trim();
-      if(email){
-        // Sign in with OTP (magic link alternative) or passkey via Supabase
-        const{error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:false}});
-        if(error)throw error;
-        showAuthSuccess('Magic link sent! Check your email to sign in without a password.');
-      } else {
-        // Try WebAuthn conditional UI (passkey autofill)
-        showAuthError('Enter your email above to receive a magic link, or type your email and use a passkey if set up on your device.');
-      }
-    }catch(e){
-      showAuthError(e.message||'Passkey sign-in failed. Try email and password instead.');
-    }
+    const{error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:false}});
+    if(error)showAuthError(error.message);
+    else showAuthSuccess('Magic link sent! Check your email to sign in.');
   }
 
-  // ── SIGN OUT ──
   async function signOut(){
     await sb.auth.signOut();
-    cards=[];tasks=[];
+    cards=[];tasks=[];currentUser=null;
     document.getElementById('authScreen').classList.remove('hidden');
   }
 
-  // ── AUTH STATE ──
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(session?.user){
       currentUser=session.user;
@@ -444,7 +456,6 @@
 
   // ── NAV ──
   function switchSection(section,type){
-    if(type==='signout'){signOut();return;}
     currentSection=section;currentView=type;
     document.getElementById('sectionTitle').textContent=section;
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.section===section));
@@ -481,7 +492,7 @@
         <div class="card-actions">
           <button class="card-action-btn" onclick="openView('${c.id}')">👁 View</button>
           <button class="card-action-btn" onclick="openEdit('${c.id}')">✏️ Edit</button>
-          <button class="card-action-btn delete" onclick="deleteCard('${c.id}')">🗑</button>
+          <button class="card-action-btn" onclick="deleteCard('${c.id}')">🗑</button>
         </div>
       </div>`).join('');
   }
@@ -588,18 +599,20 @@
   function renderTasks(){
     const list=document.getElementById('taskList');
     const today=todayStr();
+    // Show all incomplete tasks — today tab shows today+overdue, future shows upcoming
     const filtered=tasks.filter(t=>{
-      if(currentTaskTab==='today')return t.date===today&&!t.done;
-      else return t.date>today&&!t.done;
+      if(t.done)return false;
+      if(currentTaskTab==='today')return t.date<=today; // today AND overdue
+      else return t.date>today;
     }).sort((a,b)=>{const p={high:0,medium:1,low:2};return p[a.priority]-p[b.priority]||a.date.localeCompare(b.date);});
     if(!filtered.length){
       list.innerHTML=`<div class="tasks-empty"><div class="empty-icon">${currentTaskTab==='today'?'📋':'📅'}</div><p>${currentTaskTab==='today'?'No tasks for today.<br>Tap <strong>+ Add Task</strong> to add one.':'No future tasks.<br>Plan ahead with <strong>+ Add Task</strong>.'}</p></div>`;return;
     }
     list.innerHTML=filtered.map((t,i)=>`
-      <div class="task-item" style="animation-delay:${i*0.04}s">
-        <div class="task-check ${t.done?'checked':''}" onclick="toggleTask('${t.id}')"></div>
+      <div class="task-item" id="task-${t.id}" style="animation-delay:${i*0.04}s">
+        <div class="task-check" onclick="toggleTask('${t.id}')"></div>
         <div class="task-content">
-          <div class="task-name" style="${t.done?'opacity:0.4;text-decoration:line-through':''}">${esc(t.name)}</div>
+          <div class="task-name">${esc(t.name)}</div>
           <div class="task-meta">
             <span class="priority-badge priority-${t.priority}">${t.priority}</span>
             ${t.date?`<span class="task-date">📅 ${fmtDate(t.date)}</span>`:''}
@@ -613,11 +626,21 @@
 
   async function toggleTask(id){
     const t=tasks.find(x=>x.id===id);if(!t)return;
-    t.done=true;renderTasks();updateTaskBadge();
-    setTimeout(async()=>{await sb.from('tasks').delete().eq('id',id);tasks=tasks.filter(x=>x.id!==id);updateTaskBadge();renderTasks();},500);
+    // Animate the row out
+    const el=document.getElementById('task-'+id);
+    if(el)el.classList.add('completing');
+    // Mark done in DB — never delete
+    await sb.from('tasks').update({done:true}).eq('id',id);
+    t.done=true;
+    updateTaskBadge();
+    setTimeout(()=>renderTasks(),400);
   }
+
   async function deleteTask(id){
-    loadStart();await sb.from('tasks').delete().eq('id',id);tasks=tasks.filter(x=>x.id!==id);loadDone();updateTaskBadge();renderTasks();
+    loadStart();
+    await sb.from('tasks').delete().eq('id',id);
+    tasks=tasks.filter(x=>x.id!==id);
+    loadDone();updateTaskBadge();renderTasks();
   }
 
   function fmtDate(s){if(!s)return'';return new Date(s+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});}
@@ -639,7 +662,6 @@
   }
   function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),5000);}
 
-  // ── INIT APP (after login) ──
   async function initApp(){
     loadStart();
     if(Notification.permission==='default')Notification.requestPermission();
@@ -659,7 +681,6 @@
     updateTaskBadge();
   }
 
-  // ── ENTER key on auth inputs ──
   document.getElementById('siPassword').addEventListener('keydown',e=>{if(e.key==='Enter')signIn();});
   document.getElementById('suConfirm').addEventListener('keydown',e=>{if(e.key==='Enter')signUp();});
 </script>
