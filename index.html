@@ -20,24 +20,15 @@
   /* AUTH */
   .auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px;}
   .auth-screen.hidden{display:none;}
-  .auth-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 32px;}
-  .auth-logo{font-family:'Unica One',sans-serif;font-size:28px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text);display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .auth-card{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 32px;text-align:center;}
+  .auth-logo{font-family:'Unica One',sans-serif;font-size:28px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;}
   .auth-logo-dot{width:10px;height:10px;border-radius:50%;background:var(--accent2);}
   .auth-subtitle{font-size:13px;color:var(--muted);margin-bottom:32px;}
-  .auth-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:3px;margin-bottom:28px;}
-  .auth-tab{flex:1;padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:all 0.15s;border:none;background:none;font-family:'DM Sans',sans-serif;text-align:center;}
-  .auth-tab.active{background:var(--accent2);color:#000;}
-  .auth-field{margin-bottom:16px;}
-  .auth-field label{display:block;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-  .auth-field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;transition:border-color 0.15s;-webkit-appearance:none;}
-  .auth-field input:focus{border-color:var(--accent2);}
-  .auth-btn{width:100%;background:var(--accent2);border:none;border-radius:12px;padding:15px;color:#000;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:opacity 0.15s;margin-top:8px;}
-  .auth-btn:hover{opacity:0.85;}
-  .auth-btn:disabled{opacity:0.5;cursor:not-allowed;}
-  .auth-error{background:rgba(255,60,60,0.1);border:1px solid rgba(255,60,60,0.3);border-radius:10px;padding:12px 14px;font-size:13px;color:#ff5555;margin-bottom:16px;display:none;}
+  .auth-error{background:rgba(255,60,60,0.1);border:1px solid rgba(255,60,60,0.3);border-radius:10px;padding:12px 14px;font-size:13px;color:#ff5555;margin-bottom:16px;display:none;text-align:left;}
   .auth-error.show{display:block;}
-  .auth-success{background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.3);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--accent2);margin-bottom:16px;display:none;}
-  .auth-success.show{display:block;}
+  .google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 20px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:border-color 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent;}
+  .google-btn:hover{border-color:var(--accent2);background:var(--surface);}
+  .auth-note{font-size:11px;color:var(--muted);margin-top:16px;}
 
   /* SIDEBAR */
   .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:28px 0 20px;flex-shrink:0;}
@@ -205,23 +196,12 @@
   <div class="auth-card">
     <div class="auth-logo"><span class="auth-logo-dot"></span> Axis</div>
     <div class="auth-subtitle">Your personal dashboard</div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tabSignIn" onclick="showAuthTab('signin')">Sign In</button>
-      <button class="auth-tab" id="tabSignUp" onclick="showAuthTab('signup')">Sign Up</button>
-    </div>
     <div id="authError" class="auth-error"></div>
-    <div id="authSuccess" class="auth-success"></div>
-    <div id="authFormSignin">
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"/></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPassword" placeholder="••••••••" autocomplete="current-password"/></div>
-      <button class="auth-btn" id="signInBtn" onclick="signIn()">Sign In</button>
-    </div>
-    <div id="authFormSignup" style="display:none">
-      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"/></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="suPassword" placeholder="Min. 8 characters" autocomplete="new-password"/></div>
-      <div class="auth-field"><label>Confirm Password</label><input type="password" id="suConfirm" placeholder="Repeat password" autocomplete="new-password"/></div>
-      <button class="auth-btn" id="signUpBtn" onclick="signUp()">Create Account</button>
-    </div>
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+      Continue with Google
+    </button>
+    <div class="auth-note">Only approved accounts can sign in</div>
   </div>
 </div>
 
@@ -339,77 +319,88 @@
       'Authorization': 'Bearer ' + (accessToken || ANON)
     };
   }
+
+  // Silently refresh the token using the refresh_token stored in localStorage
+  async function refreshToken(){
+    const refresh = localStorage.getItem('axis_refresh');
+    if(!refresh) { signOut(); return false; }
+    try{
+      const r = await fetch(`${BASE}/auth/v1/token?grant_type=refresh_token`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':ANON},
+        body: JSON.stringify({refresh_token: refresh})
+      });
+      const d = await r.json();
+      if(!r.ok) throw new Error('refresh failed');
+      accessToken = d.access_token;
+      localStorage.setItem('axis_token', accessToken);
+      if(d.refresh_token) localStorage.setItem('axis_refresh', d.refresh_token);
+      return true;
+    } catch(e){
+      signOut(); return false;
+    }
+  }
+
+  // Wrapper: if any request gets JWT expired, refresh once and retry
+  async function apiFetch(url, options={}){
+    const makeHeaders = () => ({...authHeaders(), ...(options.headers||{})});
+    let r = await fetch(url, {...options, headers: makeHeaders()});
+    if(r.status === 401 || r.status === 403){
+      // Token expired — try to refresh
+      const ok = await refreshToken();
+      if(!ok){
+        // No refresh token available — force sign out with friendly message
+        alert('Your session expired. Please sign in again.');
+        signOut();
+        throw new Error('Session expired');
+      }
+      // Retry with new token
+      r = await fetch(url, {...options, headers: makeHeaders()});
+    }
+    if(!r.ok){
+      const txt = await r.text();
+      // If still JWT related after refresh attempt, force sign out
+      if(txt.includes('JWT') || txt.includes('expired')){
+        alert('Your session expired. Please sign in again.');
+        signOut();
+        throw new Error('Session expired');
+      }
+      throw new Error(txt);
+    }
+    return r;
+  }
+
   async function dbGet(table, query=''){
-    const r = await fetch(`${BASE}/rest/v1/${table}?${query}`, {headers: authHeaders()});
-    if(!r.ok) throw new Error(await r.text());
+    const r = await apiFetch(`${BASE}/rest/v1/${table}?${query}`);
     return r.json();
   }
   async function dbInsert(table, body){
-    const r = await fetch(`${BASE}/rest/v1/${table}`, {
-      method:'POST', headers:{...authHeaders(), 'Prefer':'return=minimal'}, body: JSON.stringify(body)
+    await apiFetch(`${BASE}/rest/v1/${table}`, {
+      method:'POST', headers:{'Prefer':'return=minimal'}, body: JSON.stringify(body)
     });
-    if(!r.ok) throw new Error(await r.text());
   }
   async function dbUpdate(table, id, body){
-    const r = await fetch(`${BASE}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
-      method:'PATCH', headers:{...authHeaders(), 'Prefer':'return=minimal'}, body: JSON.stringify(body)
+    await apiFetch(`${BASE}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
+      method:'PATCH', headers:{'Prefer':'return=minimal'}, body: JSON.stringify(body)
     });
-    if(!r.ok) throw new Error(await r.text());
   }
   async function dbDelete(table, id){
-    const r = await fetch(`${BASE}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
-      method:'DELETE', headers: authHeaders()
+    await apiFetch(`${BASE}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}`, {
+      method:'DELETE'
     });
-    if(!r.ok) throw new Error(await r.text());
   }
 
-  // ── AUTH via REST ──
-  async function signIn(){
-    const email = document.getElementById('siEmail').value.trim();
-    const password = document.getElementById('siPassword').value;
-    if(!email||!password){showAuthError('Please fill in all fields.');return;}
-    setAuthLoading(true); clearAuthMessages();
-    try{
-      const r = await fetch(`${BASE}/auth/v1/token?grant_type=password`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','apikey':ANON},
-        body: JSON.stringify({email, password})
-      });
-      const d = await r.json();
-      if(!r.ok) throw new Error(d.error_description || d.msg || 'Sign in failed');
-      accessToken = d.access_token;
-      currentUserId = d.user.id;
-      localStorage.setItem('axis_token', accessToken);
-      localStorage.setItem('axis_uid', currentUserId);
-      showApp();
-    } catch(e){ showAuthError(e.message); }
-    setAuthLoading(false);
-  }
-
-  async function signUp(){
-    const email = document.getElementById('suEmail').value.trim();
-    const password = document.getElementById('suPassword').value;
-    const confirm = document.getElementById('suConfirm').value;
-    if(!email||!password||!confirm){showAuthError('Please fill in all fields.');return;}
-    if(password.length<8){showAuthError('Password must be at least 8 characters.');return;}
-    if(password!==confirm){showAuthError('Passwords do not match.');return;}
-    setAuthLoading(true); clearAuthMessages();
-    try{
-      const r = await fetch(`${BASE}/auth/v1/signup`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','apikey':ANON},
-        body: JSON.stringify({email, password})
-      });
-      const d = await r.json();
-      if(!r.ok) throw new Error(d.error_description || d.msg || 'Sign up failed');
-      showAuthSuccess('Account created! Check your email to confirm, then sign in.');
-    } catch(e){ showAuthError(e.message); }
-    setAuthLoading(false);
+  // ── AUTH via Google OAuth ──
+  function signInWithGoogle(){
+    // Redirect to Supabase Google OAuth — it handles everything
+    const redirectTo = encodeURIComponent(window.location.origin + window.location.pathname);
+    window.location.href = `${BASE}/auth/v1/authorize?provider=google&redirect_to=${redirectTo}`;
   }
 
   function signOut(){
     localStorage.removeItem('axis_token');
     localStorage.removeItem('axis_uid');
+    localStorage.removeItem('axis_refresh');
     accessToken = null; currentUserId = null;
     cards=[]; tasks=[];
     document.getElementById('authScreen').classList.remove('hidden');
@@ -420,25 +411,33 @@
     initApp();
   }
 
-  // Auth UI helpers
-  function showAuthTab(tab){
-    document.getElementById('tabSignIn').classList.toggle('active',tab==='signin');
-    document.getElementById('tabSignUp').classList.toggle('active',tab==='signup');
-    document.getElementById('authFormSignin').style.display=tab==='signin'?'block':'none';
-    document.getElementById('authFormSignup').style.display=tab==='signup'?'block':'none';
-    clearAuthMessages();
+  function showAuthError(msg){
+    const e=document.getElementById('authError');
+    e.textContent=msg;e.classList.add('show');
   }
-  function showAuthError(msg){const e=document.getElementById('authError');e.textContent=msg;e.classList.add('show');document.getElementById('authSuccess').classList.remove('show');}
-  function showAuthSuccess(msg){const s=document.getElementById('authSuccess');s.textContent=msg;s.classList.add('show');document.getElementById('authError').classList.remove('show');}
-  function clearAuthMessages(){document.getElementById('authError').classList.remove('show');document.getElementById('authSuccess').classList.remove('show');}
-  function setAuthLoading(v){
-    document.getElementById('signInBtn').disabled=v;
-    document.getElementById('signUpBtn').disabled=v;
-    document.getElementById('signInBtn').textContent=v?'Signing in...':'Sign In';
-    document.getElementById('signUpBtn').textContent=v?'Creating...':'Create Account';
+
+  // Handle OAuth callback — Supabase puts tokens in the URL hash after Google login
+  async function handleOAuthCallback(){
+    const hash = window.location.hash;
+    if(!hash) return false;
+    const params = new URLSearchParams(hash.replace('#',''));
+    const token = params.get('access_token');
+    const refresh = params.get('refresh_token');
+    const uid = params.get('user_id') || null;
+    if(!token) return false;
+    accessToken = token;
+    if(refresh) localStorage.setItem('axis_refresh', refresh);
+    localStorage.setItem('axis_token', token);
+    // Get user ID from the token payload
+    try{
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      currentUserId = payload.sub;
+      localStorage.setItem('axis_uid', currentUserId);
+    } catch(e){}
+    // Clean the URL so tokens don't stay visible
+    history.replaceState(null, '', window.location.pathname);
+    return true;
   }
-  document.getElementById('siPassword').addEventListener('keydown',e=>{if(e.key==='Enter')signIn();});
-  document.getElementById('suConfirm').addEventListener('keydown',e=>{if(e.key==='Enter')signUp();});
 
   // ── LOADING BAR — simple & reliable ──
   const lb = document.getElementById('loadingBar');
@@ -727,17 +726,42 @@
       tasks = Array.isArray(td)?td:[];
       const now = new Date();
       tasks.forEach(t=>{if(t.date&&t.time&&!t.done&&new Date(`${t.date}T${t.time}`)>now)scheduleReminder(t);});
-    } catch(e){ console.error('Load error',e); }
+    } catch(e){
+      // If loading data fails due to auth, sign out cleanly
+      if(e.message && (e.message.includes('expired') || e.message.includes('401') || e.message.includes('JWT'))){
+        signOut(); return;
+      }
+      console.error('Load error',e);
+    }
     loadDone();
     const isMobile = window.innerWidth < 640;
     switchSection(isMobile?'Tasks':'Work', isMobile?'tasks':'board');
     updateTaskBadge();
   }
 
-  // ── AUTO LOGIN if token saved ──
-  if(accessToken && currentUserId){
-    showApp();
-  }
+  // ── STARTUP — check OAuth callback first, then saved token ──
+  (async()=>{
+    // 1. Check if we're returning from Google login (tokens in URL hash)
+    const fromOAuth = await handleOAuthCallback();
+    if(fromOAuth){ showApp(); return; }
+
+    // 2. Try saved session
+    if(accessToken && currentUserId){
+      const refresh = localStorage.getItem('axis_refresh');
+      if(refresh){
+        const ok = await refreshToken();
+        if(ok){ showApp(); return; }
+        signOut(); return;
+      }
+      // No refresh token — check if existing token still valid
+      try{
+        const r = await fetch(`${BASE}/auth/v1/user`, {
+          headers:{'apikey':ANON,'Authorization':'Bearer '+accessToken}
+        });
+        if(r.ok){ showApp(); } else { signOut(); }
+      } catch(e){ showApp(); }
+    }
+  })();
 </script>
 </body>
 </html>
