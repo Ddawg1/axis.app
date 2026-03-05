@@ -30,8 +30,33 @@
   .google-btn:hover{border-color:var(--accent2);background:var(--surface);}
   .auth-note{font-size:11px;color:var(--muted);margin-top:16px;}
 
+  /* RICH TEXT EDITOR */
+  .editor{width:100%;min-height:120px;max-height:280px;overflow-y:auto;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;outline:none;transition:border-color 0.15s;-webkit-user-select:text;user-select:text;}
+  .editor:focus{border-color:var(--accent2);}
+  .editor:empty:before{content:attr(data-placeholder);color:var(--muted);pointer-events:none;}
+  .editor h1{font-family:'Unica One',sans-serif;font-size:20px;letter-spacing:0.04em;margin:4px 0 2px;}
+  .editor h2{font-family:'Unica One',sans-serif;font-size:16px;letter-spacing:0.04em;margin:4px 0 2px;}
+  .editor ul{padding-left:20px;margin:2px 0;}
+  .editor ol{padding-left:20px;margin:2px 0;}
+  .editor li{margin:2px 0;}
+  .editor li.checked{text-decoration:line-through;opacity:0.5;}
+  .editor strong{font-weight:700;}
+  .editor .cb-wrap{display:flex;align-items:flex-start;gap:8px;margin:2px 0;list-style:none;padding-left:0;}
+  .editor .cb-wrap input[type=checkbox]{margin-top:4px;accent-color:var(--accent2);width:15px;height:15px;flex-shrink:0;cursor:pointer;}
+  .editor .cb-text.checked{text-decoration:line-through;opacity:0.5;}
+  /* Rendered card content */
+  .card-desc h1{font-family:'Unica One',sans-serif;font-size:17px;letter-spacing:0.04em;color:var(--text);margin-bottom:4px;}
+  .card-desc h2{font-family:'Unica One',sans-serif;font-size:14px;letter-spacing:0.04em;color:var(--text);margin-bottom:2px;}
+  .card-desc ul,.card-desc ol{padding-left:18px;margin:2px 0;}
+  .card-desc li{margin:1px 0;font-size:13px;color:var(--muted);}
+  .card-desc li.checked{text-decoration:line-through;opacity:0.4;}
+  .card-desc strong{font-weight:700;color:var(--text);}
+  .card-desc .cb-wrap{display:flex;align-items:flex-start;gap:6px;margin:1px 0;}
+  .card-desc .cb-wrap input{accent-color:var(--accent2);width:13px;height:13px;margin-top:2px;flex-shrink:0;}
+  .card-desc .cb-text.checked{text-decoration:line-through;opacity:0.4;}
+
   /* SIDEBAR */
-  .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:28px 0 20px;flex-shrink:0;}
+  .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:28px 0 20px;flex-shrink:0;position:relative;z-index:1;}
   .logo{font-family:'Unica One',sans-serif;font-size:20px;letter-spacing:0.12em;text-transform:uppercase;padding:0 24px 32px;color:var(--text);display:flex;align-items:center;gap:10px;}
   .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);}
   .nav-section{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);padding:0 24px 10px;margin-top:8px;}
@@ -76,7 +101,7 @@
   .bottom-nav-badge.visible{display:block;}
 
   /* MAIN */
-  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1;}
   .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0;}
   .section-title{font-family:'Unica One',sans-serif;font-size:24px;letter-spacing:0.04em;}
   .add-btn{display:flex;align-items:center;gap:8px;background:var(--accent2);color:#000;border:none;border-radius:var(--radius);padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
@@ -192,6 +217,7 @@
 <body>
 
 <!-- AUTH SCREEN -->
+<canvas id="starCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
     <div class="auth-logo"><span class="auth-logo-dot"></span> Axis</div>
@@ -269,7 +295,7 @@
       <div class="img-upload-area" id="uploadArea"><div class="upload-icon">🖼</div><span>Tap to upload a photo</span><img id="previewImg" style="display:none"/></div>
       <input type="file" id="img-input" accept="image/*"/>
     </div>
-    <div class="field"><label>Description / Notes</label><textarea id="cardDesc" rows="3" placeholder="Write something..."></textarea></div>
+    <div class="field"><label>Description / Notes</label><div class="editor" id="cardDesc" contenteditable="true" data-placeholder="Write something... (# Heading, **bold**, - bullet, 1. list, [] checkbox)" spellcheck="true"></div></div>
     <div class="modal-actions"><button class="btn-cancel" id="cancelModal">Cancel</button><button class="btn-save" id="saveCard">Save</button></div>
   </div>
 </div>
@@ -280,7 +306,7 @@
     <div class="modal-handle"></div>
     <div class="modal-title" id="viewTitle"></div>
     <img id="viewImg" class="view-img" style="display:none"/>
-    <div class="view-desc" id="viewDesc"></div>
+    <div class="card-desc" id="viewDesc" style="font-size:14px;line-height:1.75;white-space:normal;overflow:visible;display:block;-webkit-line-clamp:unset;"></div>
     <div class="modal-actions"><button class="btn-cancel" id="closeView">Close</button></div>
   </div>
 </div>
@@ -502,8 +528,14 @@
   });
   document.getElementById('addBtn').addEventListener('click',()=>{
     if(currentView==='tasks') openTaskModal();
-    else { resetCardModal(); document.getElementById('addModal').classList.add('open'); }
+    else {
+      resetCardModal();
+      document.getElementById('addModal').classList.add('open');
+      setTimeout(()=>{ document.getElementById('cardDesc').focus(); }, 300);
+    }
   });
+  // Init editor once
+  initEditor(document.getElementById('cardDesc'));
 
   // ── GRID ──
   function renderGrid(){
@@ -516,7 +548,7 @@
     grid.innerHTML = sc.map((c,i)=>`
       <div class="card ${c.img_data?'':'card-no-img'}" style="animation-delay:${i*0.05}s">
         ${c.img_data?`<img class="card-img" src="${c.img_data}" alt=""/>`:''}
-        <div class="card-body">${c.description?`<div class="card-desc">${esc(c.description)}</div>`:''}</div>
+        <div class="card-body">${c.description?`<div class="card-desc">${markdownToHtml(c.description)}</div>`:''}</div>
         <div class="card-actions">
           <button class="card-action-btn" onclick="openView('${c.id}')">👁 View</button>
           <button class="card-action-btn" onclick="openEdit('${c.id}')">✏️ Edit</button>
@@ -530,7 +562,7 @@
     document.getElementById('viewTitle').textContent=c.section;
     const img=document.getElementById('viewImg');
     if(c.img_data){img.src=c.img_data;img.style.display='block';}else img.style.display='none';
-    document.getElementById('viewDesc').textContent=c.description||'';
+    document.getElementById('viewDesc').innerHTML=markdownToHtml(c.description||'');
     document.getElementById('viewModal').classList.add('open');
   }
   document.getElementById('closeView').addEventListener('click',()=>document.getElementById('viewModal').classList.remove('open'));
@@ -538,7 +570,7 @@
 
   function resetCardModal(){
     pendingImg=null; editingId=null;
-    document.getElementById('cardDesc').value='';
+    document.getElementById('cardDesc').innerHTML='';
     document.getElementById('previewImg').style.display='none';
     document.getElementById('img-input').value='';
     document.getElementById('modalTitle').textContent='New Card';
@@ -555,8 +587,9 @@
   });
 
   document.getElementById('saveCard').addEventListener('click',async()=>{
-    const desc = document.getElementById('cardDesc').value.trim();
-    if(!desc && !pendingImg){ alert('Add a photo or some text first.'); return; }
+    const editorEl = document.getElementById('cardDesc');
+    const desc = editorToMarkdown(editorEl);
+    if(!desc.trim() && !pendingImg){ alert('Add a photo or some text first.'); return; }
     const btn = document.getElementById('saveCard');
     btn.disabled = true; btn.textContent = 'Saving...';
     loadStart();
@@ -594,7 +627,8 @@
     const c=cards.find(x=>x.id===id); if(!c) return;
     resetCardModal(); editingId=id;
     document.getElementById('modalTitle').textContent='Edit Card';
-    document.getElementById('cardDesc').value=c.description||'';
+    const editorEl = document.getElementById('cardDesc');
+    editorEl.innerHTML = markdownToEditor(c.description||'');
     if(c.img_data){pendingImg=c.img_data;const pi=document.getElementById('previewImg');pi.src=c.img_data;pi.style.display='block';}
     document.getElementById('addModal').classList.add('open');
   }
@@ -713,6 +747,288 @@
   }
   function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),5000);}
 
+  // ── RICH TEXT EDITOR ──
+
+  // Convert editor HTML to markdown string for storage
+  function editorToMarkdown(el){
+    let md = '';
+    el.childNodes.forEach(node=>{
+      if(node.nodeType===3){ // text node
+        md += node.textContent;
+      } else if(node.nodeName==='DIV'||node.nodeName==='P'||node.nodeName==='BR'){
+        md += '\n' + nodeToMd(node);
+      } else {
+        md += nodeToMd(node);
+      }
+    });
+    return md.trim();
+  }
+
+  function nodeToMd(node){
+    if(node.nodeType===3) return node.textContent;
+    const tag = node.nodeName;
+    if(tag==='BR') return '\n';
+    if(tag==='STRONG'||tag==='B') return '**'+node.innerText+'**';
+    if(tag==='H1') return '# '+node.innerText+'\n';
+    if(tag==='H2') return '## '+node.innerText+'\n';
+    if(tag==='UL'){
+      let s='';
+      node.querySelectorAll('li').forEach(li=>{
+        if(li.classList.contains('cb-wrap')){
+          const checked = li.querySelector('input')?.checked;
+          const txt = li.querySelector('.cb-text')?.innerText||'';
+          s += (checked?'[x] ':'[] ')+txt+'\n';
+        } else {
+          s += '- '+li.innerText+'\n';
+        }
+      });
+      return s;
+    }
+    if(tag==='OL'){
+      let s=''; let i=1;
+      node.querySelectorAll('li').forEach(li=>{s+=(i++)+'. '+li.innerText+'\n';});
+      return s;
+    }
+    if(tag==='LI'){
+      if(node.classList.contains('cb-wrap')){
+        const checked = node.querySelector('input')?.checked;
+        const txt = node.querySelector('.cb-text')?.innerText||'';
+        return (checked?'[x] ':'[] ')+txt+'\n';
+      }
+      return node.innerText;
+    }
+    if(tag==='DIV'||tag==='P'){
+      const inner = node.innerHTML;
+      // heading
+      if(node.getAttribute('data-type')==='h1') return '# '+node.innerText+'\n';
+      if(node.getAttribute('data-type')==='h2') return '## '+node.innerText+'\n';
+      return node.innerText+'\n';
+    }
+    return node.innerText||'';
+  }
+
+  // Convert markdown to HTML for display
+  function markdownToHtml(md){
+    if(!md) return '';
+    const lines = md.split('\n');
+    let html = '';
+    let inUl=false, inOl=false;
+    const closeList=()=>{
+      if(inUl){html+='</ul>';inUl=false;}
+      if(inOl){html+='</ol>';inOl=false;}
+    };
+    lines.forEach(line=>{
+      // checkbox
+      if(/^\[x\] /i.test(line)){
+        if(!inUl){closeList();html+='<ul style="list-style:none;padding-left:0">';inUl=true;}
+        html+=`<li class="cb-wrap"><input type="checkbox" checked onclick="this.closest('li').querySelector('.cb-text').classList.toggle('checked',this.checked)"><span class="cb-text checked">${inlineFormat(line.slice(4))}</span></li>`;
+      } else if(/^\[\] /.test(line)){
+        if(!inUl){closeList();html+='<ul style="list-style:none;padding-left:0">';inUl=true;}
+        html+=`<li class="cb-wrap"><input type="checkbox" onclick="this.closest('li').querySelector('.cb-text').classList.toggle('checked',this.checked)"><span class="cb-text">${inlineFormat(line.slice(3))}</span></li>`;
+      // bullet
+      } else if(/^- /.test(line)||/^\* /.test(line)){
+        if(!inUl){closeList();html+='<ul>';inUl=true;}
+        html+=`<li>${inlineFormat(line.slice(2))}</li>`;
+      // numbered
+      } else if(/^\d+\. /.test(line)){
+        if(!inOl){closeList();html+='<ol>';inOl=true;}
+        html+=`<li>${inlineFormat(line.replace(/^\d+\. /,''))}</li>`;
+      // h1
+      } else if(/^# /.test(line)){
+        closeList();
+        html+=`<h1>${inlineFormat(line.slice(2))}</h1>`;
+      // h2
+      } else if(/^## /.test(line)){
+        closeList();
+        html+=`<h2>${inlineFormat(line.slice(3))}</h2>`;
+      // blank
+      } else if(line.trim()===''){
+        closeList();
+        html+='<br>';
+      } else {
+        closeList();
+        html+=`<div>${inlineFormat(line)}</div>`;
+      }
+    });
+    closeList();
+    return html;
+  }
+
+  // Convert markdown to editor HTML (for editing existing cards)
+  function markdownToEditor(md){
+    return markdownToHtml(md);
+  }
+
+  // Inline formatting: **bold**
+  function inlineFormat(text){
+    return text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  }
+
+  // Auto-format triggers as user types
+  function initEditor(el){
+    el.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){
+        e.preventDefault();
+        const sel = window.getSelection();
+        const range = sel.getRangeAt(0);
+        const block = getBlock(range.startContainer);
+
+        // Continue numbered list
+        if(block && block.parentNode && block.parentNode.nodeName==='OL'){
+          const li = block.nodeName==='LI'?block:block.closest('li');
+          if(li && li.innerText.trim()===''){
+            // empty item — exit list
+            const ol = li.parentNode;
+            const div = document.createElement('div');
+            div.innerHTML='<br>';
+            ol.parentNode.insertBefore(div,ol.nextSibling);
+            li.remove();
+            if(ol.children.length===0) ol.remove();
+            moveCursorTo(div);
+          } else {
+            const newLi = document.createElement('li');
+            newLi.innerHTML='<br>';
+            li.parentNode.insertBefore(newLi, li.nextSibling);
+            moveCursorTo(newLi);
+          }
+          return;
+        }
+
+        // Continue bullet list
+        if(block && block.nodeName==='LI' && block.parentNode.nodeName==='UL' && !block.classList.contains('cb-wrap')){
+          if(block.innerText.trim()===''){
+            const ul = block.parentNode;
+            const div = document.createElement('div');
+            div.innerHTML='<br>';
+            ul.parentNode.insertBefore(div,ul.nextSibling);
+            block.remove();
+            if(ul.children.length===0) ul.remove();
+            moveCursorTo(div);
+          } else {
+            const newLi = document.createElement('li');
+            newLi.innerHTML='<br>';
+            block.parentNode.insertBefore(newLi, block.nextSibling);
+            moveCursorTo(newLi);
+          }
+          return;
+        }
+
+        // Default — insert div
+        const div = document.createElement('div');
+        div.innerHTML='<br>';
+        range.deleteContents();
+        range.insertNode(div);
+        moveCursorTo(div);
+      }
+
+      // Backspace on empty list item exits list
+      if(e.key==='Backspace'){
+        const sel = window.getSelection();
+        if(!sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        const block = getBlock(range.startContainer);
+        if(block && (block.nodeName==='LI') && block.innerText.trim()===''){
+          e.preventDefault();
+          const parent = block.parentNode;
+          const div = document.createElement('div');
+          div.innerHTML='<br>';
+          parent.parentNode.insertBefore(div, parent.nextSibling);
+          block.remove();
+          if(parent.children.length===0) parent.remove();
+          moveCursorTo(div);
+        }
+      }
+    });
+
+    el.addEventListener('input', ()=>{
+      const sel = window.getSelection();
+      if(!sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      const node = range.startContainer;
+      const block = getBlock(node);
+      if(!block) return;
+      const text = block.textContent || block.innerText || '';
+
+      // Trigger: "# " → h1
+      if(text==='# '){
+        const h = document.createElement('h1');
+        h.setAttribute('data-type','h1');
+        h.innerHTML='<br>';
+        block.parentNode.replaceChild(h,block);
+        moveCursorTo(h); return;
+      }
+      // Trigger: "## " → h2
+      if(text==='## '){
+        const h = document.createElement('h2');
+        h.setAttribute('data-type','h2');
+        h.innerHTML='<br>';
+        block.parentNode.replaceChild(h,block);
+        moveCursorTo(h); return;
+      }
+      // Trigger: "- " or "* " → bullet list
+      if(text==='- '||text==='* '){
+        const ul = document.createElement('ul');
+        const li = document.createElement('li');
+        li.innerHTML='<br>';
+        ul.appendChild(li);
+        block.parentNode.replaceChild(ul,block);
+        moveCursorTo(li); return;
+      }
+      // Trigger: "1. " → numbered list
+      if(/^\d+\. $/.test(text)){
+        const ol = document.createElement('ol');
+        const li = document.createElement('li');
+        li.innerHTML='<br>';
+        ol.appendChild(li);
+        block.parentNode.replaceChild(ol,block);
+        moveCursorTo(li); return;
+      }
+      // Trigger: "[] " → checkbox
+      if(text==='[] '){
+        const ul = document.createElement('ul');
+        ul.style='list-style:none;padding-left:0';
+        const li = document.createElement('li');
+        li.className='cb-wrap';
+        const cb = document.createElement('input');
+        cb.type='checkbox';
+        cb.style='margin-top:4px;accent-color:var(--accent2);width:15px;height:15px;flex-shrink:0;cursor:pointer';
+        cb.addEventListener('change',function(){
+          const span=this.nextElementSibling;
+          if(span) span.classList.toggle('checked',this.checked);
+        });
+        const span = document.createElement('span');
+        span.className='cb-text';
+        span.contentEditable='true';
+        span.innerHTML='<br>';
+        li.appendChild(cb);
+        li.appendChild(span);
+        ul.appendChild(li);
+        block.parentNode.replaceChild(ul,block);
+        moveCursorTo(span); return;
+      }
+    });
+  }
+
+  function getBlock(node){
+    if(!node) return null;
+    if(node.nodeType===3) return getBlock(node.parentNode);
+    const tag = node.nodeName;
+    if(['DIV','P','LI','H1','H2','SPAN'].includes(tag)) return node;
+    return getBlock(node.parentNode);
+  }
+
+  function moveCursorTo(el){
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    el.focus();
+  }
+
   // ── INIT ──
   async function initApp(){
     loadStart();
@@ -738,6 +1054,114 @@
     switchSection(isMobile?'Tasks':'Work', isMobile?'tasks':'board');
     updateTaskBadge();
   }
+
+  // ── STAR BACKGROUND ──
+  (function(){
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars=[];
+    const COUNT = 80;
+
+    function resize(){
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function randomStar(){
+      return {
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: Math.random()*1.8+0.4,        // radius
+        speed: Math.random()*0.18+0.04,  // drift speed rightward
+        angle: Math.random()*Math.PI*2,  // current rotation angle
+        rotSpeed: (Math.random()-0.5)*0.006, // rotation speed
+        orbit: Math.random()*12+4,       // orbit radius around its path
+        orbitPhase: Math.random()*Math.PI*2,
+        orbitSpeed: Math.random()*0.012+0.004,
+        opacity: Math.random()*0.5+0.25,
+        pulse: Math.random()*Math.PI*2,
+        pulseSpeed: Math.random()*0.02+0.008,
+      };
+    }
+
+    function init(){
+      resize();
+      stars = Array.from({length:COUNT}, randomStar);
+    }
+
+    function getThemeColor(){
+      return getComputedStyle(document.documentElement)
+        .getPropertyValue('--accent2').trim() || '#c8ff00';
+    }
+
+    function hexToRgb(hex){
+      hex = hex.replace('#','');
+      if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
+      const n=parseInt(hex,16);
+      return [(n>>16)&255,(n>>8)&255,n&255];
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      const color = getThemeColor();
+      const [r,g,b] = hexToRgb(color);
+
+      stars.forEach(s=>{
+        // drift right slowly
+        s.x += s.speed;
+        // orbital wobble (earth-like rotation around path)
+        s.orbitPhase += s.orbitSpeed;
+        s.angle += s.rotSpeed;
+        s.pulse += s.pulseSpeed;
+
+        const ox = Math.cos(s.orbitPhase) * s.orbit;
+        const oy = Math.sin(s.orbitPhase) * s.orbit * 0.35; // flattened ellipse
+        const px = s.x + ox;
+        const py = s.y + oy;
+
+        // pulse opacity gently
+        const op = s.opacity * (0.7 + 0.3*Math.sin(s.pulse));
+
+        // wrap around screen
+        if(s.x > W + 20) s.x = -20;
+
+        // draw star shape (4-point)
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(s.angle);
+        ctx.globalAlpha = op;
+
+        const sr = s.r;
+        ctx.beginPath();
+        for(let i=0;i<8;i++){
+          const ang = (i*Math.PI)/4;
+          const rad = i%2===0 ? sr*2.2 : sr*0.9;
+          if(i===0) ctx.moveTo(Math.cos(ang)*rad, Math.sin(ang)*rad);
+          else ctx.lineTo(Math.cos(ang)*rad, Math.sin(ang)*rad);
+        }
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${r},${g},${b},${op})`;
+        ctx.fill();
+
+        // soft glow
+        const glow = ctx.createRadialGradient(0,0,0,0,0,sr*5);
+        glow.addColorStop(0, `rgba(${r},${g},${b},${op*0.25})`);
+        glow.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx.beginPath();
+        ctx.arc(0,0,sr*5,0,Math.PI*2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+        ctx.restore();
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', resize);
+    init();
+    draw();
+  })();
 
   // ── STARTUP — check OAuth callback first, then saved token ──
   (async()=>{
