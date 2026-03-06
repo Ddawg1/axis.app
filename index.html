@@ -11,11 +11,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Unica+One&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
   :root{--accent2:#c8ff00;--radius:14px;--sidebar-w:220px;--transition:0.22s cubic-bezier(.4,0,.2,1);--bottom-nav-h:64px;--safe-bottom:env(safe-area-inset-bottom,0px);}
-  [data-theme="dark"]{--bg:#0d0d0d;--surface:#161616;--surface2:#1e1e1e;--border:#2a2a2a;--text:#f0f0f0;--muted:#666;--card-bg:#161616;}
-  [data-theme="light"]{--bg:#f2f2f2;--surface:#ffffff;--surface2:#e8e8e8;--border:#d5d5d5;--text:#111111;--muted:#999;--card-bg:#ffffff;}
+  [data-theme="dark"]{--bg:#0d0d0d;--surface:#161616;--surface2:#1e1e1e;--border:#2a2a2a;--text:#f0f0f0;--muted:#666;--card-bg:#161616;--content-bg:rgba(13,13,13,0.0);}
+  [data-theme="light"]{--bg:#f2f2f2;--surface:#ffffff;--surface2:#e8e8e8;--border:#d5d5d5;--text:#111111;--muted:#999;--card-bg:#ffffff;--content-bg:rgba(242,242,242,0.0);}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;height:-webkit-fill-available;}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;height:-webkit-fill-available;overflow:hidden;transition:background var(--transition),color var(--transition);}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;height:-webkit-fill-available;overflow:hidden;transition:background var(--transition),color var(--transition);position:relative;}
 
   /* AUTH */
   .auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px;}
@@ -56,7 +56,7 @@
   .card-desc .cb-text.checked{text-decoration:line-through;opacity:0.4;}
 
   /* SIDEBAR */
-  .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:28px 0 20px;flex-shrink:0;position:relative;z-index:1;}
+  .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:28px 0 20px;flex-shrink:0;position:relative;z-index:2;}
   .logo{font-family:'Unica One',sans-serif;font-size:20px;letter-spacing:0.12em;text-transform:uppercase;padding:0 24px 32px;color:var(--text);display:flex;align-items:center;gap:10px;}
   .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);}
   .nav-section{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);padding:0 24px 10px;margin-top:8px;}
@@ -101,8 +101,8 @@
   .bottom-nav-badge.visible{display:block;}
 
   /* MAIN */
-  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1;}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0;}
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:2;background:transparent;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--border);background:rgba(13,13,13,0.7);flex-shrink:0;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
   .section-title{font-family:'Unica One',sans-serif;font-size:24px;letter-spacing:0.04em;}
   .add-btn{display:flex;align-items:center;gap:8px;background:var(--accent2);color:#000;border:none;border-radius:var(--radius);padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
   .add-btn:active{opacity:0.85;}
@@ -111,7 +111,7 @@
   .loading-bar{position:fixed;top:0;left:0;height:3px;background:var(--accent2);width:0%;z-index:300;}
 
   /* GRID */
-  .grid-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;scrollbar-width:thin;}
+  .grid-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;scrollbar-width:thin;background:transparent;}
   .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
   .card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;animation:fadeUp 0.3s ease both;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
@@ -127,7 +127,7 @@
   .empty-state p{font-size:14px;line-height:1.7;}
 
   /* TASKS */
-  .tasks-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;display:none;}
+  .tasks-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;display:none;background:transparent;}
   .tasks-area.active{display:block;}
   .grid-area.tasks-hidden{display:none;}
   .task-tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content;margin-bottom:20px;}
@@ -148,6 +148,8 @@
   .priority-medium{background:rgba(255,180,0,0.15);color:#ffb300;border:1px solid rgba(255,180,0,0.3);}
   .priority-low{background:rgba(100,200,100,0.15);color:#66cc66;border:1px solid rgba(100,200,100,0.3);}
   .reminder-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);flex-shrink:0;margin-top:6px;}
+  .task-edit-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px;border-radius:6px;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:color 0.15s;}
+  .task-edit-btn:hover{color:var(--accent2);}
   .task-delete-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:4px;border-radius:6px;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
   .task-delete-btn:hover{color:#ff4444;}
   .tasks-empty{text-align:center;padding:60px 20px;color:var(--muted);}
@@ -217,7 +219,7 @@
 <body>
 
 <!-- AUTH SCREEN -->
-<canvas id="starCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+<canvas id="starCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
     <div class="auth-logo"><span class="auth-logo-dot"></span> Axis</div>
@@ -315,7 +317,7 @@
 <div class="modal-overlay" id="taskModal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title">New Task</div>
+    <div class="modal-title" id="taskModalTitle">New Task</div>
     <div class="field"><label>Task Name</label><input type="text" id="taskName" placeholder="What do you need to do?"/></div>
     <div class="field-row">
       <div class="field"><label>Priority</label><select id="taskPriority"><option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option></select></div>
@@ -643,10 +645,25 @@
 
   // ── TASKS ──
   function openTaskModal(){
+    editingTaskId = null;
+    document.getElementById('taskModalTitle').textContent='New Task';
     document.getElementById('taskName').value='';
     document.getElementById('taskPriority').value='medium';
     document.getElementById('taskDate').value=todayStr();
     document.getElementById('taskTime').value='';
+    document.getElementById('saveTask').textContent='Save Task';
+    document.getElementById('taskModal').classList.add('open');
+  }
+
+  function openEditTask(id){
+    const t = tasks.find(x=>x.id===id); if(!t) return;
+    editingTaskId = id;
+    document.getElementById('taskModalTitle').textContent='Edit Task';
+    document.getElementById('taskName').value=t.name||'';
+    document.getElementById('taskPriority').value=t.priority||'medium';
+    document.getElementById('taskDate').value=t.date||'';
+    document.getElementById('taskTime').value=t.time||'';
+    document.getElementById('saveTask').textContent='Update Task';
     document.getElementById('taskModal').classList.add('open');
   }
   document.getElementById('cancelTaskModal').addEventListener('click',()=>document.getElementById('taskModal').classList.remove('open'));
@@ -654,30 +671,34 @@
 
   document.getElementById('saveTask').addEventListener('click',async()=>{
     const name = document.getElementById('taskName').value.trim(); if(!name) return;
+    const priority = document.getElementById('taskPriority').value;
+    const date = document.getElementById('taskDate').value;
+    const time = document.getElementById('taskTime').value;
     const btn = document.getElementById('saveTask');
     btn.disabled=true; btn.textContent='Saving...';
     loadStart();
     try{
-      const task = {
-        id: Date.now().toString(),
-        name,
-        priority: document.getElementById('taskPriority').value,
-        date: document.getElementById('taskDate').value,
-        time: document.getElementById('taskTime').value || null,
-        done: false,
-        user_id: currentUserId,
-        created_at: new Date().toISOString()
-      };
-      await dbInsert('tasks', task);
-      tasks.push(task);
-      scheduleReminder(task);
-      updateTaskBadge();
-      currentTaskTab = task.date <= todayStr() ? 'today' : 'future';
-      document.getElementById('tabToday').classList.toggle('active', currentTaskTab==='today');
-      document.getElementById('tabFuture').classList.toggle('active', currentTaskTab==='future');
-      loadDone(); renderTasks();
+      if(editingTaskId){
+        const upd={name, priority, date, time:time||null};
+        await dbUpdate('tasks', editingTaskId, upd);
+        const idx=tasks.findIndex(x=>x.id===editingTaskId);
+        if(idx>-1) tasks[idx]={...tasks[idx],...upd};
+        editingTaskId=null;
+      } else {
+        const task = {
+          id: Date.now().toString(),
+          name, priority, date, time:time||null, done:false,
+          user_id: currentUserId,
+          created_at: new Date().toISOString()
+        };
+        await dbInsert('tasks', task);
+        tasks.push(task);
+        if(task.time) scheduleReminder(task);
+      }
+      loadDone();
+      renderTasks(); updateTaskBadge();
       document.getElementById('taskModal').classList.remove('open');
-    } catch(e){ loadDone(); alert('Error saving task: '+e.message); }
+    } catch(e){ loadDone(); alert('Error: '+e.message); }
     btn.disabled=false; btn.textContent='Save Task';
   });
 
@@ -707,6 +728,7 @@
           </div>
         </div>
         ${t.time?`<div class="reminder-dot"></div>`:''}
+        <button class="task-edit-btn" onclick="openEditTask('${t.id}')">✏️</button>
         <button class="task-delete-btn" onclick="deleteTask('${t.id}')">🗑</button>
       </div>`).join('');
   }
