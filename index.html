@@ -93,7 +93,7 @@
   .topbar-right{position:relative;display:flex;align-items:center;gap:10px;}
 
   /* BOTTOM NAV */
-  .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:calc(var(--bottom-nav-h) + var(--safe-bottom));background:var(--surface);border-top:1px solid var(--border);z-index:50;padding-bottom:var(--safe-bottom);}
+  .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:50;padding-bottom:env(safe-area-inset-bottom,0px);}
   .bottom-nav-inner{display:flex;align-items:stretch;height:var(--bottom-nav-h);}
   .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);border:none;background:none;-webkit-tap-highlight-color:transparent;position:relative;padding:8px 4px;}
   .bottom-nav-item.active{color:var(--accent2);}
@@ -186,7 +186,7 @@
   .view-modal .view-desc{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;}
 
   /* TOAST */
-  .toast{position:fixed;bottom:calc(var(--bottom-nav-h) + var(--safe-bottom) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--accent2);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--text);z-index:999;opacity:0;transition:all 0.3s;white-space:nowrap;}
+ .toast{position:fixed;bottom:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px) + 12px);
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast-title{font-weight:600;margin-bottom:3px;color:var(--accent2);font-size:11px;text-transform:uppercase;}
 
@@ -206,7 +206,7 @@
   @media(max-width:639px){
     .sidebar{display:none;}
     .bottom-nav{display:block;}
-    .main{padding-bottom:calc(var(--bottom-nav-h) + var(--safe-bottom));}
+   .main{padding-bottom:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px));}
     .grid-area,.tasks-area{padding:16px;}
     .topbar{padding:calc(16px + env(safe-area-inset-top,0px)) 16px 12px;}
     .section-title{font-size:20px;}
@@ -1243,3 +1243,4 @@
 </script>
 </body>
 </html>
+
