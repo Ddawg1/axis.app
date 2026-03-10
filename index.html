@@ -12,12 +12,16 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%230d0d0d'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23c8ff00'/%3E%3C/svg%3E"/>
 <link href="https://fonts.googleapis.com/css2?family=Unica+One&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root{--accent2:#c8ff00;--radius:14px;--sidebar-w:220px;--transition:0.22s cubic-bezier(.4,0,.2,1);--bottom-nav-h:64px;--safe-bottom:env(safe-area-inset-bottom,0px);}
+  :root{--accent2:#c8ff00;--radius:14px;--sidebar-w:220px;--transition:0.22s cubic-bezier(.4,0,.2,1);--bottom-nav-h:64px;}
   [data-theme="dark"]{--bg:#0d0d0d;--surface:#161616;--surface2:#1e1e1e;--border:#2a2a2a;--text:#f0f0f0;--muted:#666;--card-bg:#161616;--content-bg:rgba(13,13,13,0.0);}
   [data-theme="light"]{--bg:#f2f2f2;--surface:#ffffff;--surface2:#e8e8e8;--border:#d5d5d5;--text:#111111;--muted:#999;--card-bg:#ffffff;--content-bg:rgba(242,242,242,0.0);}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;height:-webkit-fill-available;}
   body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;height:-webkit-fill-available;overflow:hidden;transition:background var(--transition),color var(--transition);position:relative;}
+  /* Force sidebar hidden on mobile at body level */
+  @media(max-width:639px){
+    .sidebar{display:none !important;}
+  }
 
   /* AUTH */
   .auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px;}
@@ -161,7 +165,7 @@
   /* MODALS */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;align-items:flex-end;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity 0.2s;backdrop-filter:blur(6px);}
   .modal-overlay.open{opacity:1;pointer-events:all;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 24px calc(24px + var(--safe-bottom));width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(40px);transition:transform 0.25s cubic-bezier(.4,0,.2,1);}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 24px calc(24px + env(safe-area-inset-bottom,0px));width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(40px);transition:transform 0.25s cubic-bezier(.4,0,.2,1);}
   .modal-overlay.open .modal{transform:translateY(0);}
   .modal-handle{width:40px;height:4px;background:var(--border);border-radius:999px;margin:0 auto 20px;}
   .modal-title{font-family:'Unica One',sans-serif;font-size:20px;letter-spacing:0.04em;margin-bottom:20px;}
@@ -186,7 +190,7 @@
   .view-modal .view-desc{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;}
 
   /* TOAST */
- .toast{position:fixed;bottom:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px) + 12px);
+  .toast{position:fixed;bottom:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--accent2);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--text);z-index:999;opacity:0;transition:all 0.3s;white-space:nowrap;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast-title{font-weight:600;margin-bottom:3px;color:var(--accent2);font-size:11px;text-transform:uppercase;}
 
@@ -206,7 +210,7 @@
   @media(max-width:639px){
     .sidebar{display:none;}
     .bottom-nav{display:block;}
-   .main{padding-bottom:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px));}
+    .main{padding-bottom:calc(var(--bottom-nav-h) + env(safe-area-inset-bottom,0px));}
     .grid-area,.tasks-area{padding:16px;}
     .topbar{padding:calc(16px + env(safe-area-inset-top,0px)) 16px 12px;}
     .section-title{font-size:20px;}
@@ -335,7 +339,7 @@
 
   let accessToken = localStorage.getItem('axis_token') || null;
   let currentUserId = localStorage.getItem('axis_uid') || null;
-  let cards=[], tasks=[], currentSection='Work', currentView='board', currentTaskTab='today', editingId=null, pendingImg=null;
+  let cards=[], tasks=[], currentSection='Work', currentView='board', editingId=null, editingTaskId=null, pendingImg=null;
 
   // ── API helpers — pure REST, no SDK, no lock issues ──
   function authHeaders(){
@@ -708,7 +712,7 @@
     const filtered = tasks.filter(t=>!t.done)
       .sort((a,b)=>{const p={high:0,medium:1,low:2};return p[a.priority]-p[b.priority]||a.date.localeCompare(b.date);});
     if(!filtered.length){
-      list.innerHTML=`<div class="tasks-empty"><div class="empty-icon">${currentTaskTab==='today'?'📋':'📅'}</div><p>${currentTaskTab==='today'?'No tasks for today.<br>Tap <strong>+ Add Task</strong> to add one.':'No future tasks yet.'}</p></div>`;
+      list.innerHTML=`<div class="tasks-empty"><div class="empty-icon">📋</div><p>No tasks yet.<br>Tap <strong>+ Add Task</strong> to add one.</p></div>`;
       return;
     }
     list.innerHTML = filtered.map((t,i)=>`
@@ -1093,8 +1097,6 @@
       ]);
       cards = Array.isArray(cd)?cd:[];
       tasks = Array.isArray(td)?td:[];
-      const now = new Date();
-      // Re-register all future reminders with SW on every app load
       tasks.forEach(t=>{if(t.date&&t.time&&!t.done&&new Date(`${t.date}T${t.time}`)>new Date())scheduleReminder(t);});
     } catch(e){
       // If loading data fails due to auth, sign out cleanly
@@ -1243,4 +1245,3 @@
 </script>
 </body>
 </html>
-
