@@ -434,6 +434,7 @@
 
   function showApp(){
     document.getElementById('authScreen').classList.add('hidden');
+    requestNotificationPermission();
     initApp();
   }
 
@@ -731,6 +732,7 @@
     const el = document.getElementById('task-'+id); if(el) el.classList.add('completing');
     try{ await dbUpdate('tasks', id, {done:true}); }catch(e){ console.error('Toggle task failed:',e); }
     const t = tasks.find(x=>x.id===id); if(t) t.done=true;
+    clearReminder(id);
     updateTaskBadge();
     setTimeout(()=>renderTasks(), 400);
   }
@@ -739,6 +741,7 @@
     loadStart();
     try{ await dbDelete('tasks', id); tasks=tasks.filter(x=>x.id!==id); }
     catch(e){ alert('Error: '+e.message); }
+    clearReminder(id);
     loadDone(); updateTaskBadge(); renderTasks();
   }
 
@@ -753,13 +756,47 @@
     const mb=document.getElementById('mobileTaskBadge'); mb.textContent=count; mb.classList.toggle('visible',count>0);
   }
 
+  // ── SERVICE WORKER REGISTRATION ──
+  let swReg = null;
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').then(reg=>{
+      swReg = reg;
+      console.log('Axis SW registered');
+    }).catch(e=>console.error('SW registration failed:',e));
+  }
+
+  function sendToSW(msg){
+    if(navigator.serviceWorker && navigator.serviceWorker.controller){
+      navigator.serviceWorker.controller.postMessage(msg);
+    } else if(swReg && swReg.active){
+      swReg.active.postMessage(msg);
+    }
+  }
+
+  async function requestNotificationPermission(){
+    if(!('Notification' in window)) return;
+    if(Notification.permission === 'default'){
+      await Notification.requestPermission();
+    }
+  }
+
   function scheduleReminder(task){
     if(!task.date||!task.time) return;
-    const diff=new Date(`${task.date}T${task.time}`)-new Date();
-    if(diff<=0) return;
-    if(Notification.permission==='granted') setTimeout(()=>new Notification('⏰ Axis Reminder',{body:task.name}),diff);
-    else if(Notification.permission!=='denied') Notification.requestPermission().then(p=>{if(p==='granted')setTimeout(()=>new Notification('⏰ Axis Reminder',{body:task.name}),diff);});
-    setTimeout(()=>showToast(task.name),diff);
+    const due = new Date(`${task.date}T${task.time}`);
+    if(due <= new Date()) return;
+
+    // Send to Service Worker for background scheduling
+    requestNotificationPermission().then(()=>{
+      sendToSW({ type: 'SCHEDULE_REMINDER', task: { id: task.id, name: task.name, date: task.date, time: task.time } });
+    });
+
+    // Also keep in-app toast as fallback (only fires if app is open)
+    const diff = due - new Date();
+    setTimeout(()=>showToast(task.name), diff);
+  }
+
+  function clearReminder(taskId){
+    sendToSW({ type: 'CLEAR_REMINDER', taskId });
   }
   function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),5000);}
 
@@ -1057,7 +1094,8 @@
       cards = Array.isArray(cd)?cd:[];
       tasks = Array.isArray(td)?td:[];
       const now = new Date();
-      tasks.forEach(t=>{if(t.date&&t.time&&!t.done&&new Date(`${t.date}T${t.time}`)>now)scheduleReminder(t);});
+      // Re-register all future reminders with SW on every app load
+      tasks.forEach(t=>{if(t.date&&t.time&&!t.done&&new Date(`${t.date}T${t.time}`)>new Date())scheduleReminder(t);});
     } catch(e){
       // If loading data fails due to auth, sign out cleanly
       if(e.message && (e.message.includes('expired') || e.message.includes('401') || e.message.includes('JWT'))){
